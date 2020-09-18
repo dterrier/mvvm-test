@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="au.ziniestro.mvvmkotlintest.api.Status" />
+
+        <import type="au.ziniestro.mvvmkotlintest.api.Resource" />
+
+        <import type="au.ziniestro.mvvmkotlintest.model.Repo" />
+
+
+        <variable
+            name="repo"
+            type="androidx.lifecycle.LiveData&lt;Resource&lt;Repo>>" />
+
+
+        <variable
+            name="repoResource"
+            type="Resource" />
+
+        <variable
+            name="contributorsStatus"
+            type="Status" />
+
+        <variable
+            name="retryCallback"
+            type="au.ziniestro.mvvmkotlintest.ui.common.RetryCallback" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/name"
+            style="@style/TextAppearance.AppCompat.Headline"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@{@string/repo_full_name(repo.data.owner.login, repo.data.name)}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:visibleGone="@{repo.data != null}"
+            tools:text="name of the user" />
+
+        <TextView
+            android:id="@+id/description"
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@{repo.data.description}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/name"
+            app:visibleGone="@{repo.data != null}"
+            tools:text="description of the user" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/contributor_list"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            app:layoutManager="LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/description"
+            tools:listitem="@layout/contributor_item" />
+
+        <include
+            layout="@layout/loading_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            app:callback="@{() -> retryCallback.retry()}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:resource="@{repoResource}" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
